@@ -1,0 +1,1 @@
+Server=LEVAX11\MSSQLSERVER2022;Database=TaskManagerDB;User ID=levax;Integrated Security=True;
