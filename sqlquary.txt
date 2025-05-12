@@ -1,0 +1,3 @@
+ClearTasks=DELETE FROM Tasks
+InsertTask=INSERT INTO Tasks (Id, Title, Description, Priority, Status, CreatedAt) VALUES (@Id, @Title, @Description, @Priority, @Status, @CreatedAt)
+SelectTasks=SELECT Id, Title, Description, Priority, Status, CreatedAt FROM Tasks
