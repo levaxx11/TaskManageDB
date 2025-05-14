@@ -51,13 +51,13 @@ namespace TaskManagerDB
                 clearCommand.ExecuteNonQuery();
                 foreach (var task in tasks)
                 {
-                    var insertCommand = new SqlCommand(sqlQueries["InsertTask"], connection);
-                    insertCommand.Parameters.AddWithValue("@Title", task.Title);
-                    insertCommand.Parameters.AddWithValue("@Description", task.Description);
-                    insertCommand.Parameters.AddWithValue("@Priority", task.Priority);
-                    insertCommand.Parameters.AddWithValue("@Status", task.Status);
-                    insertCommand.Parameters.AddWithValue("@CreatedAt", task.CreatedAt);
-                    insertCommand.ExecuteNonQuery();
+                    var command = new SqlCommand(sqlQueries["InsertTask"], connection);
+                    command.Parameters.AddWithValue("@Title", task.Title);
+                       command.Parameters.AddWithValue("@Description", (object)task.Description ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Priority", task.Priority);
+                    command.Parameters.AddWithValue("@Status", task.Status);
+                    command.Parameters.AddWithValue("@CreatedAt", task.CreatedAt);
+                    command.ExecuteNonQuery();
                 }
 
             }
