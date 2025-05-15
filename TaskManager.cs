@@ -1,13 +1,13 @@
 namespace TaskManagerDB
 {
-    public class TaskManagerDB : IDisposable
+    public class TaskManager : IDisposable
     {
         private readonly TaskRepository repository;
         private readonly TaskFilter filter;
         private readonly TaskStorage storage;
         private bool disposed = false;
 
-        public TaskManagerDB()
+        public TaskManager()
         {
             repository = new TaskRepository();
             filter = new TaskFilter();
