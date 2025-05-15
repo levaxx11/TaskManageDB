@@ -1,9 +1,10 @@
 using System;
+
 namespace TaskManagerDB
 {
     public class ConsoleInterface
     {
-        private void ShowMenu()
+        public void DisplayMenu()
         {
             Console.WriteLine("\nTask Manager");
             Console.WriteLine("1. Add Task");
@@ -15,133 +16,113 @@ namespace TaskManagerDB
             Console.WriteLine("7. Exit");
             Console.Write("Choose an option: ");
         }
+
         public string GetUserInput()
         {
             return Console.ReadLine();
         }
+
         public void ClearConsole()
         {
             Console.Clear();
         }
+
         public void DisplayError(string message)
         {
             Console.WriteLine(message);
         }
-        public bool GetTaskDetailsForAdd(out string title, out string description, out TaskPriority? priority)
+
+        private TaskPriority? ParsePriority(string input)
+        {
+            switch (input)
+            {
+                case "0":
+                    return TaskPriority.Low;
+                case "1":
+                    return TaskPriority.Medium;
+                case "2":
+                    return TaskPriority.High;
+                default:
+                    return null;
+            }
+        }
+
+        private TaskStatus? ParseStatus(string input)
+        {
+            switch (input)
+            {
+                case "0":
+                    return TaskStatus.ToDo;
+                case "1":
+                    return TaskStatus.InProgress;
+                case "2":
+                    return TaskStatus.Done;
+                default:
+                    return null;
+            }
+        }
+
+        public TaskDetails GetTaskDetailsForAdd()
         {
             Console.Write("Enter title: ");
-            title = Console.ReadLine();
+            string title = Console.ReadLine();
             Console.Write("Enter description: ");
-            description = Console.ReadLine();
+            string desc = Console.ReadLine();
             Console.Write("Enter priority (0=Low, 1=Medium, 2=High): ");
-            priority = null;
             string priorityInput = Console.ReadLine();
-            try
-            {
-                priority = (TaskPriority)int.Parse(priorityInput);
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
+            TaskPriority? priority = ParsePriority(priorityInput);
 
+            return new TaskDetails(title, desc, priority);
         }
-        public bool GetTaskDetailsForEdit(out int? id, out string title, out string description, out TaskPriority? priority, out TaskStatus? status)
+
+        public TaskDetails GetTaskDetailsForEdit()
         {
             Console.Write("Enter task ID: ");
-            id = null;
+            int? id = null;
             string idInput = Console.ReadLine();
-            try
+            if (int.TryParse(idInput, out int parsedId))
             {
-                id = int.Parse(idInput);
+                id = parsedId;
             }
-            catch (FormatException)
-            {
-                id = null;
-                title = null;
-                description = null;
-                priority = null;
-                status = null;
-                return false;
-            }
+
             Console.Write("Enter new title: ");
-            title = Console.ReadLine();
+            string title = Console.ReadLine();
             Console.Write("Enter new description: ");
-            description = Console.ReadLine();
+            string desc = Console.ReadLine();
             Console.Write("Enter new priority (0=Low, 1=Medium, 2=High): ");
-            priority = null;
             string priorityInput = Console.ReadLine();
-            try
-            {
-                priority = (TaskPriority)int.Parse(priorityInput);
-            }
-            catch (FormatException)
-            {
-                priority = null;
-                status = null;
-                return false;
-            }
+            TaskPriority? priority = ParsePriority(priorityInput);
+
             Console.Write("Enter new status (0=ToDo, 1=InProgress, 2=Done): ");
-            status = null;
             string statusInput = Console.ReadLine();
-            try
-            {
-                status = (TaskStatus)int.Parse(statusInput);
-                return true;
-            }
-            catch (FormatException)
-            {
-                status = null;
-                return false;
-            }
+            TaskStatus? status = ParseStatus(statusInput);
+
+            return new TaskDetails(id, title, desc, priority, status);
         }
+
         public int? GetTaskIdForDelete()
         {
-            Console.Write("Enter task ID to delete: ");
+            Console.Write("Enter task ID: ");
             string idInput = Console.ReadLine();
-            try
+            if (int.TryParse(idInput, out int id))
             {
-                return int.Parse(idInput);
+                return id;
             }
-            catch (FormatException)
-            {
-                return null;
-            }
+            return null;
         }
+
         public TaskStatus? GetStatusFilter()
         {
             Console.Write("Enter status to filter (0=ToDo, 1=InProgress, 2=Done): ");
-            string input = Console.ReadLine();
-            try
-            {
-                return (TaskStatus)int.Parse(input);
-            }
-            catch (FormatException)
-            {
-                return null;
-            }
-
+            string statusInput = Console.ReadLine();
+            return ParseStatus(statusInput);
         }
+
         public TaskPriority? GetPriorityFilter()
         {
             Console.Write("Enter priority to filter (0=Low, 1=Medium, 2=High): ");
-            string input = Console.ReadLine();
-            try
-            {
-                return (TaskPriority)int.Parse(input);
-            }
-            catch (FormatException)
-            {
-                return null;
-            }
+            string priorityInput = Console.ReadLine();
+            return ParsePriority(priorityInput);
         }
-
     }
 }
-       
- 
-                
-                   
-              
-         
