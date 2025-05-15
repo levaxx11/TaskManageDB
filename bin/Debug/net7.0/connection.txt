@@ -1,1 +1,1 @@
-Server=LEVAX11\MSSQLSERVER2022;Database=TaskManagerDB;Integrated Security=True;
+Data Source=LEVAXX11\MSSQLSERVER2022;Initial Catalog=TaskManagerDB;Integrated Security=True
