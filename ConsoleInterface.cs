@@ -33,7 +33,7 @@ namespace TaskManagerDB
             }
             catch (IOException)
             {
-                // Игнорируем ошибку, если консоль недоступна
+               
             }
         }
 
@@ -64,7 +64,7 @@ namespace TaskManagerDB
                     priority = TaskPriority.High;
                     break;
                 default:
-                    priority = null; // Некорректный ввод
+                    priority = null; 
                     break;
             }
 
@@ -101,7 +101,7 @@ namespace TaskManagerDB
                     priority = TaskPriority.High;
                     break;
                 default:
-                    priority = null; // Некорректный ввод
+                    priority = null; 
                     break;
             }
 
@@ -121,7 +121,7 @@ namespace TaskManagerDB
                     status = TaskStatus.Done;
                     break;
                 default:
-                    status = null; // Некорректный ввод
+                    status = null; 
                     break;
             }
 
@@ -157,7 +157,7 @@ namespace TaskManagerDB
                     status = TaskStatus.Done;
                     break;
                 default:
-                    status = null; // Некорректный ввод
+                    status = null; 
                     break;
             }
 
@@ -182,7 +182,7 @@ namespace TaskManagerDB
                     priority = TaskPriority.High;
                     break;
                 default:
-                    priority = null; // Некорректный ввод
+                    priority = null; 
                     break;
             }
 
