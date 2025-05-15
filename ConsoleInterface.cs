@@ -24,42 +24,22 @@ namespace TaskManagerDB
 
         public void ClearConsole()
         {
-            Console.Clear();
+            try
+            {
+                if (!Console.IsOutputRedirected)
+                {
+                    Console.Clear();
+                }
+            }
+            catch (IOException)
+            {
+                // Игнорируем ошибку, если консоль недоступна
+            }
         }
 
         public void DisplayError(string message)
         {
             Console.WriteLine(message);
-        }
-
-        private TaskPriority? ParsePriority(string input)
-        {
-            switch (input)
-            {
-                case "0":
-                    return TaskPriority.Low;
-                case "1":
-                    return TaskPriority.Medium;
-                case "2":
-                    return TaskPriority.High;
-                default:
-                    return null;
-            }
-        }
-
-        private TaskStatus? ParseStatus(string input)
-        {
-            switch (input)
-            {
-                case "0":
-                    return TaskStatus.ToDo;
-                case "1":
-                    return TaskStatus.InProgress;
-                case "2":
-                    return TaskStatus.Done;
-                default:
-                    return null;
-            }
         }
 
         public TaskDetails GetTaskDetailsForAdd()
@@ -70,7 +50,23 @@ namespace TaskManagerDB
             string desc = Console.ReadLine();
             Console.Write("Enter priority (0=Low, 1=Medium, 2=High): ");
             string priorityInput = Console.ReadLine();
-            TaskPriority? priority = ParsePriority(priorityInput);
+            TaskPriority? priority = null;
+
+            switch (priorityInput)
+            {
+                case "0":
+                    priority = TaskPriority.Low;
+                    break;
+                case "1":
+                    priority = TaskPriority.Medium;
+                    break;
+                case "2":
+                    priority = TaskPriority.High;
+                    break;
+                default:
+                    priority = null; // Некорректный ввод
+                    break;
+            }
 
             return new TaskDetails(title, desc, priority);
         }
@@ -91,11 +87,43 @@ namespace TaskManagerDB
             string desc = Console.ReadLine();
             Console.Write("Enter new priority (0=Low, 1=Medium, 2=High): ");
             string priorityInput = Console.ReadLine();
-            TaskPriority? priority = ParsePriority(priorityInput);
+            TaskPriority? priority = null;
+
+            switch (priorityInput)
+            {
+                case "0":
+                    priority = TaskPriority.Low;
+                    break;
+                case "1":
+                    priority = TaskPriority.Medium;
+                    break;
+                case "2":
+                    priority = TaskPriority.High;
+                    break;
+                default:
+                    priority = null; // Некорректный ввод
+                    break;
+            }
 
             Console.Write("Enter new status (0=ToDo, 1=InProgress, 2=Done): ");
             string statusInput = Console.ReadLine();
-            TaskStatus? status = ParseStatus(statusInput);
+            TaskStatus? status = null;
+
+            switch (statusInput)
+            {
+                case "0":
+                    status = TaskStatus.ToDo;
+                    break;
+                case "1":
+                    status = TaskStatus.InProgress;
+                    break;
+                case "2":
+                    status = TaskStatus.Done;
+                    break;
+                default:
+                    status = null; // Некорректный ввод
+                    break;
+            }
 
             return new TaskDetails(id, title, desc, priority, status);
         }
@@ -115,14 +143,50 @@ namespace TaskManagerDB
         {
             Console.Write("Enter status to filter (0=ToDo, 1=InProgress, 2=Done): ");
             string statusInput = Console.ReadLine();
-            return ParseStatus(statusInput);
+            TaskStatus? status = null;
+
+            switch (statusInput)
+            {
+                case "0":
+                    status = TaskStatus.ToDo;
+                    break;
+                case "1":
+                    status = TaskStatus.InProgress;
+                    break;
+                case "2":
+                    status = TaskStatus.Done;
+                    break;
+                default:
+                    status = null; // Некорректный ввод
+                    break;
+            }
+
+            return status;
         }
 
         public TaskPriority? GetPriorityFilter()
         {
             Console.Write("Enter priority to filter (0=Low, 1=Medium, 2=High): ");
             string priorityInput = Console.ReadLine();
-            return ParsePriority(priorityInput);
+            TaskPriority? priority = null;
+
+            switch (priorityInput)
+            {
+                case "0":
+                    priority = TaskPriority.Low;
+                    break;
+                case "1":
+                    priority = TaskPriority.Medium;
+                    break;
+                case "2":
+                    priority = TaskPriority.High;
+                    break;
+                default:
+                    priority = null; // Некорректный ввод
+                    break;
+            }
+
+            return priority;
         }
     }
 }

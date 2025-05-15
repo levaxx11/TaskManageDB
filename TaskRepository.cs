@@ -30,7 +30,8 @@ namespace TaskManagerDB
                 Console.WriteLine("Task not found!");
             }
         }
-              public void DeleteTask(int id)
+
+        public void DeleteTask(int id)
         {
             var task = tasks.Find(t => t.Id == id);
             if (task != null)
@@ -48,7 +49,5 @@ namespace TaskManagerDB
         {
             return tasks;
         }
-
-      
     }
 }

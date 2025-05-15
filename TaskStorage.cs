@@ -5,16 +5,15 @@ using System.IO;
 
 namespace TaskManagerDB
 {
-    public class TaskStorage : IDisposable
+    public class TaskStorage
     {
-        private readonly DatabaseConnection dbConnection;
         private readonly Dictionary<string, string> sqlQueries;
-        private bool disposed = false;
+
         public TaskStorage()
         {
-            dbConnection = new DatabaseConnection();
             sqlQueries = LoadSqlQueries();
         }
+
         private Dictionary<string, string> LoadSqlQueries()
         {
             var queries = new Dictionary<string, string>();
@@ -40,44 +39,57 @@ namespace TaskManagerDB
             {
                 throw new Exception("Required SQL queries (ClearTasks, InsertTask, SelectTasks) not found in sqlquary.txt");
             }
-            return queries;
 
+            return queries;
         }
-        public void SaveTask(List<Task> tasks)
+
+        public void SaveTasks(List<Task> tasks)
         {
-            using (var connection = dbConnection.GetConnection())
+            try
             {
-                var clearCommand = new SqlCommand(sqlQueries["ClearTasks"], connection);
+                DatabaseConnection.OpenConnection();
+
+                // Clear existing tasks
+                var clearCommand = new SqlCommand(sqlQueries["ClearTasks"], DatabaseConnection.Connection);
                 clearCommand.ExecuteNonQuery();
+
+                // Insert all tasks
                 foreach (var task in tasks)
                 {
-                    var command = new SqlCommand(sqlQueries["InsertTask"], connection);
+                    var command = new SqlCommand(sqlQueries["InsertTask"], DatabaseConnection.Connection);
+                    command.Parameters.AddWithValue("@Id", task.Id);
                     command.Parameters.AddWithValue("@Title", task.Title);
-                       command.Parameters.AddWithValue("@Description", (object)task.Description ?? DBNull.Value);
-                    command.Parameters.AddWithValue("@Priority", task.Priority);
-                    command.Parameters.AddWithValue("@Status", task.Status);
+                    command.Parameters.AddWithValue("@Description", (object)task.Description ?? DBNull.Value);
+                    command.Parameters.AddWithValue("@Priority", (int)task.Priority);
+                    command.Parameters.AddWithValue("@Status", (int)task.Status);
                     command.Parameters.AddWithValue("@CreatedAt", task.CreatedAt);
                     command.ExecuteNonQuery();
                 }
-
+            }
+            finally
+            {
+                DatabaseConnection.CloseConnection();
             }
         }
+
         public List<Task> LoadTasks()
         {
             var tasks = new List<Task>();
-            using (var connection = dbConnection.GetConnection())
+            try
             {
-                var selectCommand = new SqlCommand(sqlQueries["SelectTasks"], connection);
-                using (var reader = selectCommand.ExecuteReader())
+                DatabaseConnection.OpenConnection();
+
+                var command = new SqlCommand(sqlQueries["SelectTasks"], DatabaseConnection.Connection);
+                using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         var task = new Task(
-                             id: reader.GetInt32(0),
-                             title: reader.GetString(1),
-                             description: reader.IsDBNull(2) ? null : reader.GetString(2),
-                             priority: (TaskPriority)reader.GetInt32(3)
-                         )
+                            id: reader.GetInt32(0),
+                            title: reader.GetString(1),
+                            description: reader.IsDBNull(2) ? null : reader.GetString(2),
+                            priority: (TaskPriority)reader.GetInt32(3)
+                        )
                         {
                             Status = (TaskStatus)reader.GetInt32(4),
                             CreatedAt = reader.GetDateTime(5)
@@ -86,17 +98,11 @@ namespace TaskManagerDB
                     }
                 }
             }
+            finally
+            {
+                DatabaseConnection.CloseConnection();
+            }
             return tasks;
         }
-        public void Dispose()
-        {
-            if (!disposed)
-            {
-                dbConnection.Dispose();
-                disposed = true;
-            }
-        }   
     }
-    
-    
 }

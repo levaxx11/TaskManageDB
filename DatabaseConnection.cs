@@ -1,44 +1,26 @@
-using System;
 using System.Data.SqlClient;
-using System.IO;
 
-namespace TaskManager
+namespace TaskManagerDB
 {
-    public class DatabaseConnection : IDisposable
+    public static class DatabaseConnection
     {
-        private readonly SqlConnection connection;
-        private bool disposed = false;
+         public static SqlConnection Connection { get; } = CreateConnection();
 
-        public DatabaseConnection()
-        {
-            try
-            {
-                string connectionString = File.ReadAllText("connection.txt").Trim();
-                connection = new SqlConnection(connectionString);
-                connection.Open();
-                Console.WriteLine("Successfully connected to the database!");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Failed to connect to the database", ex);
-            }
-        }
+  private static SqlConnection CreateConnection()
+  {
+      string connectionString = "Data Source=LEVAXX11\\MSSQLSERVER2022;Initial Catalog=TaskManagerDB;User ID=levax; Integrated Security=True";
+      return new SqlConnection(connectionString);
+  }
 
-        public SqlConnection GetConnection()
-        {
-            if (disposed)
-                throw new ObjectDisposedException("DatabaseConnection");
-            return connection;
-        }
 
-        public void Dispose()
-        {
-            if (!disposed)
-            {
-                connection.Close();
-                connection.Dispose();
-                disposed = true;
-            }
-        }
+  public static void OpenConnection()
+  {
+      Connection.Open();
+  }
+
+  public static void CloseConnection()
+  {
+      Connection.Close();
+  }
     }
 }
